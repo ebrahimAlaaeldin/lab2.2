@@ -1,0 +1,77 @@
+import java.util.*;
+
+public class App {
+    public static void main(String[] args) throws Exception {
+
+        Scanner input = new Scanner(System.in);
+        System.out.println("Enter a string: ");
+        String str = input.nextLine();// get the string from the user
+        String[] str1 = str.split(" ");// split the string into an array
+        String[] powerSet = powerS(str1);// get the power set of the array
+        ArrayList<ArrayList<String>> power = new ArrayList<ArrayList<String>>();// convert the power set to an arraylist
+        // modify the array
+        power = modifyArray(powerSet);// modify the array
+        System.out.println("Power set using recursive approach: ");
+        System.out.println(power);// print the power set
+        ArrayList<String> mySet = new ArrayList<String>();
+        for (int i = 0; i < str1.length; i++) {//convert the array to arrayList
+            mySet.add(str1[i]);
+        }
+        ArrayList<ArrayList<String>> result = powerSetIterative(mySet);
+        System.out.println("Power set using iterative approach: ");
+        System.out.println(result);
+        input.close();
+
+    }
+
+    static ArrayList<ArrayList<String>> modifyArray(String[] str1) {
+        ArrayList<ArrayList<String>> power = new ArrayList<ArrayList<String>>();
+        for (int i = 0; i < str1.length; i++) {// of arraylists/
+            String[] temp = str1[i].split("/");// split the string into an array
+            power.add(new ArrayList<String>(Arrays.asList(temp)));// add the array to the arraylist
+        }
+        return power;// return the arraylist
+    }
+
+    static String[] powerS(String[] str1) {// recursive function to get the power set of an array
+        // base case
+        if (str1.length == 0) {
+            String[] base = { "" };
+            return base;
+        }
+        // recursive case
+        String[] smallSet = powerS(Arrays.copyOfRange(str1, 1, str1.length));
+        String[] bigSet = new String[2 * smallSet.length];// double the size of the small set
+        for (int i = 0; i < smallSet.length; i++) {// add the first element of the array to the small set
+            bigSet[i] = smallSet[i];// add the small set to the big set
+            bigSet[i + smallSet.length] = str1[0] + "/" + smallSet[i];// add the first element of the array to the
+                                                                      // small set
+
+        }
+
+        return bigSet;// return the big set
+
+    }
+
+    public static ArrayList<ArrayList<String>> powerSetIterative(ArrayList<String> inputSet) {
+        int n = inputSet.size();
+        ArrayList<ArrayList<String>> powerSet = new ArrayList<>();
+
+        // Iterate through 2^n combinations
+        for (int i = 0; i < (1 << n); i++) {
+            ArrayList<String> subset = new ArrayList<>();
+
+            // Use binary representation to determine which elements to include
+            for (int j = 0; j < n; j++) {
+                if ((i & (1 << j)) != 0) {
+                    subset.add(inputSet.get(j));
+                }
+            }
+
+            powerSet.add(subset);
+        }
+
+        return powerSet;
+    }
+
+}
